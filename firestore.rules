@@ -1,0 +1,32 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global Safety Net: default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // Products collection: Menu items and real-time stock
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if isValidId(productId);
+    }
+
+    // Orders collection: Sales transactions & GoFood orders
+    match /orders/{orderId} {
+      allow read: if true;
+      allow create, update: if isValidId(orderId);
+      allow delete: if false;
+    }
+
+    // Settings collection: Warkop store and Gojek configuration
+    match /settings/{settingsId} {
+      allow read: if true;
+      allow write: if isValidId(settingsId);
+    }
+  }
+}

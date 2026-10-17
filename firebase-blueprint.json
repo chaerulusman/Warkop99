@@ -1,0 +1,74 @@
+{
+  "entities": {
+    "Product": {
+      "title": "Product",
+      "description": "Menu item available in Warkop with pricing and stock levels",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "category": { "type": "string", "enum": ["kopi", "mie", "rokok", "minuman", "makanan"] },
+        "price": { "type": "number" },
+        "gofoodPrice": { "type": "number" },
+        "costPrice": { "type": "number" },
+        "stock": { "type": "number" },
+        "unit": { "type": "string" },
+        "minStockAlert": { "type": "number" },
+        "isAvailable": { "type": "boolean" },
+        "isFavorite": { "type": "boolean" }
+      },
+      "required": ["id", "name", "category", "price", "gofoodPrice", "costPrice", "stock", "unit", "isAvailable"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "Completed transaction recorded either from direct walk-in or online Gojek GoFood",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "channel": { "type": "string", "enum": ["langsung", "gofood"] },
+        "subtotal": { "type": "number" },
+        "discount": { "type": "number" },
+        "commissionAmount": { "type": "number" },
+        "total": { "type": "number" },
+        "netRevenue": { "type": "number" },
+        "totalCost": { "type": "number" },
+        "grossProfit": { "type": "number" },
+        "paymentMethod": { "type": "string", "enum": ["tunai", "qris", "gopay", "transfer"] },
+        "tableOrNote": { "type": "string" },
+        "customerName": { "type": "string" },
+        "status": { "type": "string", "enum": ["completed", "cancelled"] },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "channel", "subtotal", "total", "netRevenue", "totalCost", "grossProfit", "paymentMethod", "status", "createdAt"]
+    },
+    "Settings": {
+      "title": "Settings",
+      "description": "Operational settings for Warkop POS and GoFood merchant",
+      "type": "object",
+      "properties": {
+        "storeName": { "type": "string" },
+        "address": { "type": "string" },
+        "phone": { "type": "string" },
+        "gofoodStoreOpen": { "type": "boolean" },
+        "gofoodDefaultCommission": { "type": "number" },
+        "soundEnabled": { "type": "boolean" },
+        "qrisMerchantName": { "type": "string" }
+      },
+      "required": ["storeName", "gofoodStoreOpen", "gofoodDefaultCommission"]
+    }
+  },
+  "firestore": {
+    "/products/{productId}": {
+      "schema": { "$ref": "#/entities/Product" },
+      "description": "Catalog of warkop products and current real-time stock levels"
+    },
+    "/orders/{orderId}": {
+      "schema": { "$ref": "#/entities/Order" },
+      "description": "Transaction logs for sales and GoFood orders"
+    },
+    "/settings/{settingsId}": {
+      "schema": { "$ref": "#/entities/Settings" },
+      "description": "Store configuration and GoFood integration settings"
+    }
+  }
+}
